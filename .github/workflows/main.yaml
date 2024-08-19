@@ -8,7 +8,7 @@ on:
 jobs:
   buildForWebGL:
     name: Build for WebGL
-    uses: ./.github/workflows/buildWithLinux.yml
+    uses: ./.github/workflows/buildWithLinux.yaml
     with:
       platform: WebGL
       secrets:
