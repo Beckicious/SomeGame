@@ -37,8 +37,7 @@ jobs:
       - name: Cache Library
         uses: actions/cache@v4
         with:
-          projectPath: ${{ inputs.projectPath }}
-          path: Library
+          path: ${{ inputs.platform }}/Library
           key: Library-build-${{ inputs.platform }}
           restore-keys: |
             Library-build-${{ inputs.platform }}
