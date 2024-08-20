@@ -18,7 +18,11 @@ public class HexGrid : MonoBehaviour
                 position.y = (y + x * 0.5f - x / 2) * (HexMetrics.innerRadius * 2f) - ((numYCells - 1) * HexMetrics.innerRadius);
                 position.z = 0f;
 
-                Instantiate(HexPrefab, position, Quaternion.Euler(0, 0, 0), transform);
+                var hex = Instantiate(HexPrefab, position, Quaternion.Euler(0, 0, 0), transform);
+                for (int i = 1; i <= 6; i++)
+                {
+                    hex.transform.GetChild(i).gameObject.SetActive(Random.value > 0.6);
+                }
             }
         }
     }

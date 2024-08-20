@@ -23,7 +23,17 @@ public class Hex : MonoBehaviour
         }
     }
 
-    private void OnMouseUpAsButton()
+    //private void OnMouseUpAsButton()
+    //{
+    //    Rotate60Degrees();
+    //}
+
+    //private void OnMouseUp()
+    //{
+    //    Rotate60Degrees();
+    //}
+
+    private void OnMouseDown()
     {
         Rotate60Degrees();
     }
