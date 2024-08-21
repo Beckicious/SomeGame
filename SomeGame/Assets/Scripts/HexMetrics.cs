@@ -1,8 +1,12 @@
 public static class HexMetrics
 {
-    public const float outerToInner = 0.866025404f;
-    public const float innerToOuter = 1f / outerToInner;
+    public const float OuterToInner = 0.866025404f;
+    public const float InnerToOuter = 1f / OuterToInner;
 
-    public const float outerRadius = 0.57f;
-    public const float innerRadius = outerRadius * outerToInner;
+    public const float OuterRadius = 0.5f;
+    public const float InnerRadius = OuterRadius * OuterToInner;
+
+    public const float Gap = 0.13f;
+    public const float HorizontalDistance = OuterRadius * 1.5f + Gap * OuterToInner;
+    public const float VerticalDistance = InnerRadius * 2 + Gap;
 }
