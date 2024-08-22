@@ -1,3 +1,5 @@
+using System.IO;
+using System.Text;
 using TMPro;
 using UnityEngine;
 
@@ -44,8 +46,8 @@ public class HexGrid : MonoBehaviour
             for (int y = 0; y < numYCells; y++)
             {
                 Vector3 position;
-                position.x = x * HexMetrics.HorizontalDistance - (numXCells - 1) / 2 * HexMetrics.HorizontalDistance;
-                position.y = (y + x * 0.5f - x / 2) * HexMetrics.VerticalDistance - ((numYCells - 1) / 2 * HexMetrics.VerticalDistance);
+                position.x = x * HexMetrics.HorizontalDistance - numXCells / 2.0f * HexMetrics.HorizontalDistance;
+                position.y = -(y + x * 0.5f - x / 2) * HexMetrics.VerticalDistance + (numYCells / 2.0f * HexMetrics.VerticalDistance);
                 position.z = 0f;
 
                 var hexGO = Instantiate(HexPrefab, position, Quaternion.Euler(0, 0, 0), transform);
@@ -63,7 +65,7 @@ public class HexGrid : MonoBehaviour
                 // Add neighbors
                 if (y > 0)
                 {
-                    hex.AddNeighbor(hexGrid[y - 1, x], HexDirection.S);
+                    hex.AddNeighbor(hexGrid[y - 1, x], HexDirection.N);
                 }
                 if (x > 0)
                 {
@@ -71,16 +73,16 @@ public class HexGrid : MonoBehaviour
                     {
                         if (y > 0)
                         {
-                            hex.AddNeighbor(hexGrid[y - 1, x - 1], HexDirection.SW);
+                            hex.AddNeighbor(hexGrid[y - 1, x - 1], HexDirection.NW);
                         }
-                        hex.AddNeighbor(hexGrid[y, x - 1], HexDirection.NW);
+                        hex.AddNeighbor(hexGrid[y, x - 1], HexDirection.SW);
                     }
                     else
                     {
-                        hex.AddNeighbor(hexGrid[y, x - 1], HexDirection.SW);
+                        hex.AddNeighbor(hexGrid[y, x - 1], HexDirection.NW);
                         if (y < numYCells - 1)
                         {
-                            hex.AddNeighbor(hexGrid[y + 1, x - 1], HexDirection.NW);
+                            hex.AddNeighbor(hexGrid[y + 1, x - 1], HexDirection.SW);
                         }
                     }
                 }
@@ -115,5 +117,41 @@ public class HexGrid : MonoBehaviour
 
         ConnectionCounter.text = $"Connections: {numBridges}";
         return numBridges;
+    }
+
+    public string GridToString()
+    {
+        StringBuilder sb = new StringBuilder();
+        for (int y = 0; y < numYCells; y++)
+        {
+            for (int x = 0; x < numXCells; x++)
+            {
+                sb.Append(hexGrid[y, x].ConnectionsAsString());
+                if (x < numXCells - 1)
+                {
+                    sb.Append(',');
+                }
+            }
+            sb.Append('\n');
+        }
+        return sb.ToString();
+    }
+
+    public void Export()
+    {
+        string gridString = GridToString();
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        Debug.Log("WebGL Export");
+        DownloadFileHelper.DownloadToFile(gridString, "grid.csv");
+#else
+        Debug.Log("Local Export");
+        string path = Path.Combine(Application.persistentDataPath, "grid.csv");
+        using (StreamWriter writer = new StreamWriter(File.Open(path, FileMode.Create)))
+        {
+            writer.Write(gridString);
+            writer.Flush();
+        }
+#endif
     }
 }

@@ -67,4 +67,17 @@ public class Hex : MonoBehaviour
         }
         return HasConnection(dir) && Neighbors[(int)dir].HasConnection(dir.Opposite());
     }
+
+    public string ConnectionsAsString()
+    {
+        int connectionFlags = 0;
+        for (int i = 0; i < Connections.Length; i++)
+        {
+            if (Connections[i])
+            {
+                connectionFlags |= 1 << i;
+            }
+        }
+        return connectionFlags.ToString("D2");
+    }
 }
