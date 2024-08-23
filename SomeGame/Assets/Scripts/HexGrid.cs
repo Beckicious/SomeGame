@@ -47,8 +47,8 @@ public class HexGrid : MonoBehaviour
             for (int y = 0; y < numYCells; y++)
             {
                 Vector3 position;
-                position.x = x * HexMetrics.HorizontalDistance - numXCells / 2.0f * HexMetrics.HorizontalDistance;
-                position.y = -(y + x * 0.5f - x / 2) * HexMetrics.VerticalDistance + (numYCells / 2.0f * HexMetrics.VerticalDistance);
+                position.x = x * HexMetrics.HorizontalDistance - (numXCells - 1) / 2.0f * HexMetrics.HorizontalDistance;
+                position.y = -(y + x * 0.5f - x / 2) * HexMetrics.VerticalDistance + ((numYCells - 0.5f) / 2.0f * HexMetrics.VerticalDistance);
                 position.z = 0f;
 
                 var hexGO = Instantiate(HexPrefab, position, Quaternion.Euler(0, 0, 0), transform);
