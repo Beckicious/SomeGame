@@ -139,47 +139,4 @@ public class HexGrid : MonoBehaviour
         }
         return sb.ToString();
     }
-
-    public void Import()
-    {
-#if UNITY_WEBGL && !UNITY_EDITOR
-        Debug.Log("WebGL Import");
-        FileHelper.UploadFileDialog();
-#else
-        Debug.Log("Local Import");
-        string path = EditorUtility.OpenFilePanel("Import solution", "", "csv");
-        int y = 0;
-        using (StreamReader reader = new StreamReader(File.OpenRead(path)))
-        {
-            while (y < numYCells)
-            {
-                string line = reader.ReadLine();
-                var splitted = line.Split(',');
-                for (int x = 0; x < numXCells; x++)
-                {
-                    hexGrid[y, x].FromString(splitted[x]);
-                }
-                y++;
-            }
-        }
-#endif
-    }
-
-    public void Export()
-    {
-        string gridString = GridToString();
-
-#if UNITY_WEBGL && !UNITY_EDITOR
-        Debug.Log("WebGL Export");
-        FileHelper.DownloadToFile(gridString, "grid.csv");
-#else
-        Debug.Log("Local Export");
-        string path = Path.Combine(Application.persistentDataPath, "grid.csv");
-        using (StreamWriter writer = new StreamWriter(File.Open(path, FileMode.Create)))
-        {
-            writer.Write(gridString);
-            writer.Flush();
-        }
-#endif
-    }
 }
