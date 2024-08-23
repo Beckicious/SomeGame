@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Hex : MonoBehaviour
@@ -6,6 +7,8 @@ public class Hex : MonoBehaviour
     private HexDirection rotatedTop = HexDirection.N;
 
     private const float rotationSpeed = 200;
+
+    private readonly Color fullyBridged = Color.Lerp(Color.green, Color.blue, 0.2f);
 
     [SerializeField]
     private Hex[] Neighbors = new Hex[6];
@@ -35,10 +38,20 @@ public class Hex : MonoBehaviour
         gameObject.GetComponentInParent<HexGrid>().CountBridges();
     }
 
+    private void RotateDirToTop(HexDirection dir)
+    {
+        while (rotatedTop != dir)
+        {
+            Rotate60Degrees();
+        }
+    }
+
     private void Rotate60Degrees()
     {
         rotatedTop = rotatedTop.Next();
         isRotating = true;
+
+        CheckBridged();
     }
 
     public void AddNeighbor(Hex neighbor, HexDirection dir)
@@ -68,6 +81,34 @@ public class Hex : MonoBehaviour
         return HasConnection(dir) && Neighbors[(int)dir].HasConnection(dir.Opposite());
     }
 
+    public void CheckBridged()
+    {
+        gameObject.GetComponent<SpriteRenderer>().color = Color.Lerp(Color.white, fullyBridged, 1.0f / 6 * Bridgeness());
+    }
+
+    public int Bridgeness()
+    {
+        int i = 0;
+
+        foreach (HexDirection dir in Enum.GetValues(typeof(HexDirection)))
+        {
+            if (Neighbors[(int)dir] is null)
+            {
+                i++;
+            }
+            else if (!HasConnection(dir))
+            {
+                i++;
+            }
+            else if (Neighbors[(int)dir].HasConnection(dir.Opposite()))
+            {
+                i++;
+            }
+        }
+
+        return i;
+    }
+
     public string ConnectionsAsString()
     {
         int connectionFlags = 0;
@@ -78,6 +119,22 @@ public class Hex : MonoBehaviour
                 connectionFlags |= 1 << i;
             }
         }
-        return connectionFlags.ToString("D2");
+        return connectionFlags.ToString("D2") + ":" + ((int)rotatedTop).ToString("D1");
+    }
+
+    public void FromString(string str)
+    {
+        //int connectionFlags = int.Parse(str.Split(':')[0]);
+
+        //for (int i = 0; i < Connections.Length; i++)
+        //{
+        //    if ((connectionFlags >> i & 1) == 1)
+        //    {
+        //        ActivateConnection((HexDirection)i);
+        //    }
+        //}
+
+        int rotation = int.Parse(str.Split(':')[1]);
+        RotateDirToTop((HexDirection)rotation);
     }
 }
