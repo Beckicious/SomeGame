@@ -1,6 +1,6 @@
 # SomeGame
 
-- [ ] Grid representation
+- [x] Grid representation
 - [ ] Set start and end
 - [ ] Calculate shortest path
 - [ ] Visualize connections
