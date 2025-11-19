@@ -5,4 +5,3 @@
 - [ ] Calculate shortest path
 - [ ] Visualize connections
 - [ ] Animate shortest path
-
